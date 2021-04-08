@@ -13,6 +13,23 @@ class Board:
         print(f"{self.board[line][column]} | ", end="")
       print(" ")
       print("-"*16)
+    
+  def update(self, color:int=0):
+    prev_color = self.board[0][0]
+    if(color >= 0 and color < self.ncolors):
+      self.flood(prev_color, color, (0,0))
+  
+
+  def __isvalidpos(self, pos:tuple):
+    return pos[0] >= 0 and pos[0] < self.dim and pos[1] >= 0 and pos[1] < self.dim
+
+  def flood(self, prev_color:int=0, new_color:int=0, pos:tuple=(0,0)):
+    if(self.__isvalidpos(pos) and self.board[pos[0], pos[1]] == prev_color):
+      self.board[pos[0], pos[1]] = new_color
+      self.flood(prev_color, new_color, (pos[0], pos[1]+1))
+      self.flood(prev_color, new_color, (pos[0]+1, pos[1]))
+
+    
 
 class Game:
 
@@ -31,6 +48,13 @@ class Game:
       self.menu()
       self.draw()
       self.command = input('Insira um comando: ')
+      self.update()
+
+  def update(self):
+    color = int(self.command)
+    print(color)
+    self.board.update(color)
+
 
   def main(self):
     self.__game_loop()
